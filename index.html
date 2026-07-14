@@ -5,8 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>江苏海洋大学新生指南 · 通灌校区 · 苍梧校区</title>
   <meta name="description" content="江苏海洋大学通灌校区和苍梧校区新生指南，涵盖报到流程、宿舍、食堂、交通等全方位信息">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      /* Theme defaults — tongguan */
+      --c-primary: #EA580C;
+      --c-primary-hover: #F97316;
+      --c-bg-gradient: linear-gradient(135deg, #fff7ed, #fffbeb);
+      --c-bg-gradient-dark: linear-gradient(135deg, #1a0c00, #1a1000);
+      --c-tab-bg: #fed7aa;
+      --c-tab-text: #c2410c;
+      --c-border: #fed7aa;
+      --c-accent-light: #fff7ed;
+    }
+
+    [data-campus="cangwu"] {
+      --c-primary: #2563EB;
+      --c-primary-hover: #3B82F6;
+      --c-bg-gradient: linear-gradient(135deg, #eff6ff, #eef2ff);
+      --c-bg-gradient-dark: linear-gradient(135deg, #0a1628, #0f0a1a);
+      --c-tab-bg: #bfdbfe;
+      --c-tab-text: #1d4ed8;
+      --c-border: #bfdbfe;
+      --c-accent-light: #eff6ff;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif; }
+    .theme-transition, .theme-transition * { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+
+    /* Dark mode overrides */
+    .dark body, .dark { background-color: #111827; color: #e5e7eb; }
+  </style>
 </head>
-<body>
-  <p>Loading...</p>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+  <div id="app">
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white dark:bg-gray-900">
+      <div class="text-3xl font-bold" style="color: var(--c-primary);">江苏海洋大学</div>
+      <div class="mt-4 w-48 h-1 bg-gray-200 rounded-full overflow-hidden">
+        <div id="loadingBar" class="h-full rounded-full" style="background: var(--c-primary); width: 0%;"></div>
+      </div>
+      <p class="mt-2 text-sm text-gray-500">加载中...</p>
+    </div>
+
+    <!-- Main content (hidden until loaded) -->
+    <div id="mainContent" class="hidden">
+      <!-- Campus tabs -->
+      <div id="campusTabs" class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b" style="border-color: var(--c-border);">
+        <div class="max-w-4xl mx-auto flex">
+          <button class="campus-tab flex-1 py-3 text-center font-medium text-sm transition-colors" data-campus="tongguan">通灌校区</button>
+          <button class="campus-tab flex-1 py-3 text-center font-medium text-sm transition-colors" data-campus="cangwu">苍梧校区</button>
+        </div>
+      </div>
+
+      <!-- Page content container -->
+      <div id="pageContent" class="max-w-4xl mx-auto px-4 py-6"></div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
 </html>
