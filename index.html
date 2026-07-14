@@ -121,7 +121,7 @@
         <img src="wanju.jpg" alt="联通宽带">
         <div class="ad-footer">
           <span class="timer">联通宽带 <strong>55元/月</strong> · <span id="adTimer">2秒后可关闭</span></span>
-          <button id="adCloseBtn" class="close-btn" style="background: var(--c-primary); color: white;" onclick="closeAd()">关闭</button>
+          <button id="adCloseBtn" class="close-btn" style="background: var(--c-primary); color: white;">关闭</button>
         </div>
       </div>
     </div>
@@ -155,7 +155,7 @@
           <nav id="sidebarNav" class="space-y-1"></nav>
           <!-- QR code -->
           <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <img src="contact-qr.jpg" alt="微信二维码" class="w-32 h-32 mx-auto rounded-lg">
+            <img src="contact-qr.jpg" alt="微信二维码" class="w-32 mx-auto rounded-lg">
             <p class="text-xs text-center text-gray-500 mt-2">扫码添加微信咨询</p>
           </div>
         </div>
@@ -906,6 +906,7 @@
       function closeAd() {
         document.getElementById('adOverlay').classList.remove('active');
       }
+      document.getElementById('adCloseBtn').addEventListener('click', closeAd);
 
       // Loading animation with progress bar
       let loadProgress = 0;
