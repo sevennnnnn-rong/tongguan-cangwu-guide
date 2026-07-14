@@ -681,7 +681,7 @@
 
     function renderSubPages(data, container, pageId) {
       const page = data.pages[pageId];
-      let subPages = page.pages || [];
+      const subPages = page.pages || [];
 
       container.innerHTML = `
         <h2 class="text-xl font-bold mb-4" style="color: var(--c-primary);">${page.title}</h2>
