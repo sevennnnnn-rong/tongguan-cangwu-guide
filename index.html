@@ -32,18 +32,26 @@
     }
 
     html { scroll-behavior: smooth; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; touch-action: manipulation; overscroll-behavior: none; }
     .theme-transition, .theme-transition * { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
 
     /* Dark mode overrides */
     .dark body, .dark { background-color: #111827; color: #e5e7eb; }
 
-    #mainContent {
-      padding-bottom: 4rem;
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #e2e8f0; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+    html.dark ::-webkit-scrollbar-track { background: #1f2937; }
+    html.dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+
+    #pageContent {
+      padding-bottom: 5rem;
     }
     @media (min-width: 768px) {
-      #mainContent {
+      #pageContent {
         padding-left: 16rem;
+        padding-bottom: 2rem;
       }
     }
 
@@ -104,8 +112,8 @@
     }
   </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
-  <div id="app">
+<body class="bg-gray-50 dark:bg-gray-900">
+  <div id="app" class="h-screen flex flex-col">
     <!-- Loading overlay -->
     <div id="loadingOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white dark:bg-gray-900">
       <div class="text-3xl font-bold" style="color: var(--c-primary);">江苏海洋大学</div>
@@ -127,23 +135,23 @@
     </div>
 
     <!-- Main content (hidden until loaded) -->
-    <div id="mainContent" class="hidden">
+    <div id="mainContent" class="hidden flex-1 flex flex-col min-h-0">
       <!-- Campus tabs -->
-      <div id="campusTabs" class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b" style="border-color: var(--c-border);">
+      <div id="campusTabs" class="flex-shrink-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b theme-transition" style="border-color: var(--c-border);">
         <div class="max-w-4xl mx-auto flex items-center">
-          <button class="campus-tab flex-1 py-3 text-center font-medium text-sm transition-colors" data-campus="tongguan">通灌校区</button>
-          <button class="campus-tab flex-1 py-3 text-center font-medium text-sm transition-colors" data-campus="cangwu">苍梧校区</button>
-          <button id="darkToggle" class="p-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" title="切换深色模式">
-            <i data-lucide="moon" width="20" height="20"></i>
+          <button class="campus-tab flex-1 py-2 md:py-3 text-center font-medium text-xs md:text-sm transition-colors" data-campus="tongguan">通灌校区</button>
+          <button class="campus-tab flex-1 py-2 md:py-3 text-center font-medium text-xs md:text-sm transition-colors" data-campus="cangwu">苍梧校区</button>
+          <button id="darkToggle" class="p-2 md:p-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" title="切换深色模式">
+            <i data-lucide="moon" width="18" height="18"></i>
           </button>
         </div>
       </div>
 
-      <!-- Page content container -->
-      <div id="pageContent" class="max-w-4xl mx-auto px-4 py-6"></div>
+      <!-- Scrollable page content container -->
+      <div id="pageContent" class="flex-1 overflow-y-auto max-w-4xl mx-auto w-full px-3 md:px-8 py-4 md:py-8"></div>
 
       <!-- Bottom navigation (mobile) -->
-      <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 md:hidden theme-transition"></nav>
+      <nav id="bottomNav" class="flex-shrink-0 fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 md:hidden theme-transition"></nav>
 
       <!-- Sidebar (desktop) -->
       <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transform -translate-x-full md:translate-x-0 transition-transform z-30 theme-transition hidden md:block">
@@ -160,9 +168,6 @@
           </div>
         </div>
       </aside>
-
-      <!-- Spacer for bottom nav -->
-      <div id="bottomSpacer" class="h-16 md:hidden"></div>
     </div>
   </div>
 
@@ -275,10 +280,6 @@
     <li>绩点关系到奖学金和保研资格，务必重视</li>
     <li>关注教务处的选课通知，热门课要抢</li>
     </ul>`,
-              },
-              {
-                title: '学业导师制',
-                content: `<p>学校为每位新生配备学业导师，负责指导学习规划、选课建议和专业发展。入学后各学院会组织导师见面会，届时与导师建立联系。</p>`,
               },
               {
                 title: '学分认定',
@@ -513,10 +514,6 @@
     </ul>`,
               },
               {
-                title: '学业导师制',
-                content: `<p>学校为每位新生配备学业导师，负责指导学习规划、选课建议和专业发展。入学后各学院会组织导师见面会。</p>`,
-              },
-              {
                 title: '学分认定',
                 content: `<p>无故缺课时数超过该课程教学时数1/3，或缺交作业超过1/3，取消该课程考核资格。课程考核不合格须重修。</p>
     <p class="mt-2">转专业需咨询学院，一般有成绩和申请时间要求。</p>`,
@@ -717,6 +714,7 @@
       currentPage = pageId;
       updateActiveNav(pageId);
       updateSidebarNav(pageId);
+      container.scrollTop = 0;
       lucide.createIcons();
     }
 
@@ -858,8 +856,8 @@
       const navContainer = document.getElementById('bottomNav');
       if (navContainer) {
         navContainer.innerHTML = NAV.map(n => `
-          <button class="nav-btn flex flex-col items-center gap-0.5 px-3 py-1 text-xs text-gray-500 dark:text-gray-400 transition-colors" data-page="${n.id}">
-            <i data-lucide="${n.icon}" width="20" height="20"></i>
+          <button class="nav-btn flex flex-col items-center gap-0.5 px-2 py-2 text-[10px] text-gray-500 dark:text-gray-400 transition-colors min-w-0 flex-1" data-page="${n.id}">
+            <i data-lucide="${n.icon}" width="18" height="18"></i>
             <span>${n.label}</span>
           </button>
         `).join('');
