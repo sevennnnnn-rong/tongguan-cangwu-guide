@@ -649,6 +649,7 @@
 
       currentPage = pageId;
       updateActiveNav(pageId);
+      updateSidebarNav(pageId);
       lucide.createIcons();
     }
 
@@ -731,14 +732,24 @@
     }
 
     function updateActiveNav(pageId) {
-      // Update bottom nav
-      document.querySelectorAll('.nav-btn').forEach(btn => {
+      // Update bottom nav only — preserves sidebar button layout classes
+      document.querySelectorAll('#bottomNav .nav-btn').forEach(btn => {
         const isActive = btn.dataset.page === pageId;
         btn.className = `nav-btn flex flex-col items-center gap-0.5 px-3 py-1 text-xs transition-colors ${
           isActive ? 'font-semibold' : 'text-gray-500 dark:text-gray-400'
         }`;
-        if (isActive) btn.style.color = 'var(--c-primary)';
-        else btn.style.color = '';
+        btn.style.color = isActive ? 'var(--c-primary)' : '';
+      });
+    }
+
+    function updateSidebarNav(pageId) {
+      // Update sidebar nav buttons — preserves w-full, flex items-center, gap-3, px-3 py-2, rounded-lg layout
+      document.querySelectorAll('#sidebarNav .nav-btn').forEach(btn => {
+        const isActive = btn.dataset.page === pageId;
+        btn.className = `nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors text-left ${
+          isActive ? 'font-semibold bg-gray-100 dark:bg-gray-800' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+        }`;
+        btn.style.color = isActive ? 'var(--c-primary)' : '';
       });
     }
 
@@ -814,6 +825,7 @@
 
       lucide.createIcons();
       updateActiveNav('home');
+      updateSidebarNav('home');
     });
   </script>
 </body>
