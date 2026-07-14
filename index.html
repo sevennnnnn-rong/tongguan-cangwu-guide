@@ -129,7 +129,7 @@
         <img src="wanju.jpg" alt="联通宽带">
         <div class="ad-footer">
           <span class="timer">联通宽带 <strong>55元/月</strong> · <span id="adTimer">2秒后可关闭</span></span>
-          <button id="adCloseBtn" class="close-btn" style="background: var(--c-primary); color: white;">关闭</button>
+          <button id="adCloseBtn" class="close-btn" style="background: var(--c-primary); color: white;" onclick="closeAd()">关闭</button>
         </div>
       </div>
     </div>
@@ -901,10 +901,9 @@
         }, 1000);
       }
 
-      function closeAd() {
+      window.closeAd = function() {
         document.getElementById('adOverlay').classList.remove('active');
       }
-      document.getElementById('adCloseBtn').addEventListener('click', closeAd);
 
       // Loading animation with progress bar
       let loadProgress = 0;
