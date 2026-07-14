@@ -120,7 +120,7 @@
       <div class="ad-box">
         <img src="wanju.jpg" alt="联通宽带">
         <div class="ad-footer">
-          <span class="timer">联通宽带 <strong>55元/月</strong> · <span id="adTimer">2</span>秒后可关闭</span>
+          <span class="timer">联通宽带 <strong>55元/月</strong> · <span id="adTimer">2秒后可关闭</span></span>
           <button id="adCloseBtn" class="close-btn" style="background: var(--c-primary); color: white;" onclick="closeAd()">关闭</button>
         </div>
       </div>
@@ -890,12 +890,12 @@
         const overlay = document.getElementById('adOverlay');
         overlay.classList.add('active');
         adCountdown = 2;
-        document.getElementById('adTimer').textContent = adCountdown;
+        document.getElementById('adTimer').textContent = '2秒后可关闭';
         document.getElementById('adCloseBtn').classList.remove('active');
 
         const timer = setInterval(() => {
           adCountdown--;
-          document.getElementById('adTimer').textContent = adCountdown > 0 ? adCountdown : '可关闭';
+          document.getElementById('adTimer').textContent = adCountdown > 0 ? adCountdown + '秒后可关闭' : '可关闭';
           if (adCountdown <= 0) {
             clearInterval(timer);
             document.getElementById('adCloseBtn').classList.add('active');
