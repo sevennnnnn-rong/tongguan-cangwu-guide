@@ -46,6 +46,62 @@
         padding-left: 16rem;
       }
     }
+
+    /* Ad popup */
+    #adOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    #adOverlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #adOverlay .ad-box {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 90vw;
+      max-height: 90vh;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    #adOverlay .ad-box img {
+      max-width: 100%;
+      max-height: 70vh;
+      display: block;
+    }
+    #adOverlay .ad-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #f9fafb;
+    }
+    #adOverlay .ad-footer .timer {
+      font-size: 14px;
+      color: #6b7280;
+    }
+    #adOverlay .ad-footer .close-btn {
+      padding: 6px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      opacity: 0.5;
+      pointer-events: none;
+      transition: all 0.2s;
+    }
+    #adOverlay .ad-footer .close-btn.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
@@ -57,6 +113,17 @@
         <div id="loadingBar" class="h-full rounded-full" style="background: var(--c-primary); width: 0%;"></div>
       </div>
       <p class="mt-2 text-sm text-gray-500">加载中...</p>
+    </div>
+
+    <!-- Ad popup -->
+    <div id="adOverlay">
+      <div class="ad-box">
+        <img src="wanju.jpg" alt="联通宽带">
+        <div class="ad-footer">
+          <span class="timer">联通宽带 <strong>55元/月</strong> · <span id="adTimer">2</span>秒后可关闭</span>
+          <button id="adCloseBtn" class="close-btn" style="background: var(--c-primary); color: white;" onclick="closeAd()">关闭</button>
+        </div>
+      </div>
     </div>
 
     <!-- Main content (hidden until loaded) -->
@@ -817,11 +884,45 @@
         });
       }
 
-      // Loading animation complete
-      setTimeout(() => {
-        document.getElementById('loadingOverlay').classList.add('hidden');
-        document.getElementById('mainContent').classList.remove('hidden');
-      }, 800);
+      // Ad popup logic
+      let adCountdown = 2;
+      function showAd() {
+        const overlay = document.getElementById('adOverlay');
+        overlay.classList.add('active');
+        adCountdown = 2;
+        document.getElementById('adTimer').textContent = adCountdown;
+        document.getElementById('adCloseBtn').classList.remove('active');
+
+        const timer = setInterval(() => {
+          adCountdown--;
+          document.getElementById('adTimer').textContent = adCountdown > 0 ? adCountdown : '可关闭';
+          if (adCountdown <= 0) {
+            clearInterval(timer);
+            document.getElementById('adCloseBtn').classList.add('active');
+          }
+        }, 1000);
+      }
+
+      function closeAd() {
+        document.getElementById('adOverlay').classList.remove('active');
+      }
+
+      // Loading animation with progress bar
+      let loadProgress = 0;
+      const loadingBar = document.getElementById('loadingBar');
+      const loadInterval = setInterval(() => {
+        loadProgress += Math.random() * 15 + 5;
+        if (loadProgress >= 100) {
+          loadProgress = 100;
+          clearInterval(loadInterval);
+          setTimeout(() => {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            showAd();
+          }, 300);
+        }
+        loadingBar.style.width = Math.min(loadProgress, 100) + '%';
+      }, 150);
 
       lucide.createIcons();
       updateActiveNav('home');
