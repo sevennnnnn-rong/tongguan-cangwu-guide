@@ -66,6 +66,515 @@
   </div>
 
   <script>
+    const NAV = [
+      { id: 'home', label: '首页概况', icon: 'home' },
+      { id: 'admission', label: '入学指南', icon: 'graduation-cap' },
+      { id: 'study', label: '学习指南', icon: 'book-open' },
+      { id: 'life', label: '生活指南', icon: 'backpack' },
+      { id: 'faq', label: '常见问题', icon: 'circle-help' },
+    ];
+
+    const CAMPUSES = ['tongguan', 'cangwu'];
+    let currentCampus = localStorage.getItem('campus') || 'tongguan';
+
+    const guideData = {
+      tongguan: {
+        name: '通灌校区',
+        address: '江苏省连云港市海州区通灌南路108号',
+        quickLinks: [
+          { icon: 'map-pin', label: '校园地图', desc: '通灌校区布局图' },
+          { icon: 'phone', label: '常用电话', desc: '报警: 0518-85585110' },
+          { icon: 'calendar', label: '校历安排', desc: '2025-2026学年' },
+          { icon: 'bus', label: '通勤方式', desc: '电动车15-20分钟到苍梧' },
+        ],
+        pages: {
+          home: {
+            title: '通灌校区概况',
+            content: `<p class="text-lg leading-relaxed">通灌校区位于连云港市海州区通灌南路108号，地处市中心核心地段，占地面积约200亩。校区虽然不大，但"三步食堂，五步教室"，生活节奏舒适。</p>
+    <p class="mt-3 leading-relaxed">目前部分专业的大一新生及研究生（共约2900名学生）在此学习和生活。2024年在校办学的本科专业包括：金融学、法学、汉语言文学、英语、俄语、日语、数学与应用数学、海洋科学、机械设计制造及其自动化、土木工程、测绘工程、船舶与海洋工程、食品科学与工程、水产养殖学、财务管理等15个专业。</p>
+    <p class="mt-3 leading-relaxed">大多数学生在通灌学习一年后，会搬迁至苍梧主校区继续完成学业。</p>`,
+          },
+          admission: {
+            title: '入学指南',
+            pages: [
+              {
+                title: '报到流程',
+                content: `<ol class="list-decimal pl-5 space-y-2">
+    <li><strong>线上报到：</strong>8月30日前登录迎新系统完成自助报到</li>
+    <li><strong>现场报到：</strong>按录取通知书规定日期到校，至通灌校区对应学院接待点</li>
+    <li><strong>提交材料：</strong>录取通知书、身份证及复印件3份、学籍档案（勿拆！）、党团组织关系证明、一寸/二寸证件照各5张</li>
+    <li><strong>领取物品：</strong>宿舍钥匙、校园卡、军训服装</li>
+    <li><strong>办理入住：</strong>到对应宿舍楼管理员处登记入住</li>
+    </ol>
+    <p class="mt-3 text-sm text-gray-500">不能按期报到需提前向学校请假（不超过2周）</p>`,
+              },
+              {
+                title: '通灌专业列表',
+                content: `<p>2024年在通灌校区办学专业（15个）：</p>
+    <ul class="list-disc pl-5 mt-2 grid grid-cols-2 gap-1">
+    <li>金融学</li><li>法学</li><li>汉语言文学</li><li>英语</li><li>俄语</li><li>日语</li><li>数学与应用数学</li><li>海洋科学</li><li>机械设计制造及其自动化</li><li>土木工程</li><li>测绘工程</li><li>船舶与海洋工程</li><li>食品科学与工程</li><li>水产养殖学</li><li>财务管理</li>
+    </ul>
+    <p class="mt-3 text-sm text-gray-500">通常大二搬迁至苍梧校区，具体以各学院通知为准</p>`,
+              },
+              {
+                title: '收费标准',
+                content: `<table class="w-full text-sm"><thead><tr class="border-b"><th class="text-left py-2">类别</th><th class="text-right py-2">费用</th></tr></thead><tbody>
+    <tr class="border-b"><td class="py-2">文科类</td><td class="text-right">5200元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">理科类</td><td class="text-right">5500元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">工科类</td><td class="text-right">5800元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">农林类</td><td class="text-right">2500元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">住宿费</td><td class="text-right">700-1200元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">体检费</td><td class="text-right">84元</td></tr>
+    <tr class="border-b"><td class="py-2">军训服装</td><td class="text-right">96元/套</td></tr>
+    <tr><td class="py-2">公寓用品(自愿)</td><td class="text-right">450元/套</td></tr>
+    </tbody></table>`,
+              },
+              {
+                title: '注册须知',
+                content: `<ul class="list-disc pl-5 space-y-2">
+    <li>新生须持录取通知书和身份证按时报到</li>
+    <li>因故不能按期报到，须提前书面请假（不超过2周）</li>
+    <li>入学后3个月内进行学籍复查，不合格取消学籍</li>
+    <li>户口迁移：连云港市（含三县）一般不办，其他地区自愿</li>
+    <li>助学贷款：办生源地贷款的去当地县区教育局资助管理中心</li>
+    </ul>`,
+              },
+              {
+                title: '军训指南',
+                content: `<p>军训时间：开学后2-3天开始，约2周（参考2024级：9月7日-21日）</p>
+    <p class="mt-2">训练地点：通灌校区操场</p>
+    <p class="mt-2 font-medium">必备清单：</p>
+    <ul class="list-disc pl-5 mt-1 space-y-1">
+    <li>高倍防晒霜（SPF30+）—— 连云港9月太阳很毒</li>
+    <li>大容量水杯，可带淡盐水或运动饮料</li>
+    <li>松软吸汗鞋垫（或卫生巾代替）——站军姿脚会疼</li>
+    <li>藿香正气水、创可贴、防蚊喷雾</li>
+    <li>小风扇、纸巾湿巾</li>
+    <li>糖果/巧克力防低血糖</li>
+    </ul>
+    <p class="mt-2 font-medium">⚠️ 重要提醒：</p>
+    <ul class="list-disc pl-5 mt-1 space-y-1">
+    <li>军训是必修课，不合格不准予毕业</li>
+    <li>身体不适立即报告，现场有医疗点，不要硬撑</li>
+    <li>每天必须吃早餐</li>
+    <li>早睡早起，午休尽量睡一会儿</li>
+    </ul>`,
+              },
+            ],
+          },
+          study: {
+            title: '学习指南',
+            pages: [
+              {
+                title: '完全学分制',
+                content: `<p>学校实行完全学分制，每学期一般选20-30学分为宜，最高不超过36学分。选课通过学校教务系统进行。</p>
+    <p class="mt-2">建议：</p>
+    <ul class="list-disc pl-5 mt-1 space-y-1">
+    <li>大一上学期建议选22-26学分，适应大学节奏</li>
+    <li>绩点关系到奖学金和保研资格，务必重视</li>
+    <li>关注教务处的选课通知，热门课要抢</li>
+    </ul>`,
+              },
+              {
+                title: '学业导师制',
+                content: `<p>学校为每位新生配备学业导师，负责指导学习规划、选课建议和专业发展。入学后各学院会组织导师见面会，届时与导师建立联系。</p>`,
+              },
+              {
+                title: '学分认定',
+                content: `<p>无故缺课时数超过该课程教学时数1/3，或缺交作业超过1/3，取消该课程考核资格。课程考核不合格须重修。</p>
+    <p class="mt-2">转专业需咨询学院，一般有成绩和申请时间要求。</p>`,
+              },
+              {
+                title: '毕业要求',
+                content: `<ul class="list-disc pl-5 space-y-1">
+    <li>修满培养方案规定的全部学分</li>
+    <li>平均绩点达到学校要求</li>
+    <li>完成毕业论文/设计并通过答辩</li>
+    <li>军训合格</li>
+    <li>无未解除的违纪处分</li>
+    </ul>`,
+              },
+              {
+                title: '自习与学习资源',
+                content: `<p>通灌校区自习地点：</p>
+    <ul class="list-disc pl-5 space-y-1">
+    <li>教学楼空教室（开放时间查询教务处通知）</li>
+    <li>宿舍楼自习室（部分锦绣楼配有）</li>
+    <li>图书馆通灌分馆</li>
+    </ul>
+    <p class="mt-2">大一的课程以公共课和基础课为主，课表相对固定。建议养成自主学习习惯，为后续专业学习打好基础。</p>`,
+              },
+            ],
+          },
+          life: {
+            title: '生活指南',
+            pages: [
+              {
+                title: '宿舍',
+                content: `<p>通灌校区共有8栋宿舍楼（锦绣1-8号楼），均为格力空调全覆盖：</p>
+    <table class="w-full text-sm mt-2"><thead><tr class="border-b"><th class="text-left py-2">楼栋</th><th class="text-left py-2">类型</th><th class="text-left py-2">独卫</th><th class="text-left py-2">阳台</th><th class="text-right py-2">费用</th></tr></thead><tbody>
+    <tr class="border-b"><td class="py-2">锦绣1、2、5号</td><td>4人间上下铺</td><td>无</td><td>无</td><td class="text-right">900元/年</td></tr>
+    <tr class="border-b"><td class="py-2">锦绣3、4号</td><td>4人间(少量双人间)</td><td>有</td><td>有</td><td class="text-right">1200元/年</td></tr>
+    <tr class="border-b"><td class="py-2">锦绣6、7号</td><td>5人间</td><td>无</td><td>无</td><td class="text-right">700元/年</td></tr>
+    <tr class="border-b"><td class="py-2">锦绣8号</td><td>3人间</td><td>有</td><td>有</td><td class="text-right">1200元/年</td></tr>
+    </tbody></table>
+    <p class="mt-2">🚿 洗澡全部使用公共浴室（隔间式，每日打扫）</p>
+    <p class="mt-1">🧺 每层配备直饮机、热水机、洗衣机（"胖乖生活"App扫码）</p>
+    <p class="mt-1">🔌 宿舍不断电，但禁止使用大功率违规电器</p>
+    <p class="mt-1">🚪 门禁：晚上10:30关门</p>
+    <p class="mt-1">🛏️ 床铺尺寸：0.9m × 2.0m</p>`,
+              },
+              {
+                title: '食堂',
+                content: `<p>通灌校区有3个食堂，一顿饭8-15元：</p>
+    <ul class="list-disc pl-5 mt-2 space-y-1">
+    <li><strong>前程餐厅：</strong>快餐较多，内有汉堡店、奶茶店。锦绣1-4号楼靠近此食堂</li>
+    <li><strong>美食广场：</strong>特色小吃较多，也有奶茶店。锦绣5-8号楼靠近此食堂</li>
+    <li><strong>民族餐厅：</strong>提供民族风味餐食</li>
+    </ul>
+    <p class="mt-2">支持支付宝绑定校园卡直接刷。校门口还有赵一鸣零食（原罗森已更换）。</p>`,
+              },
+              {
+                title: '校园卡',
+                content: `<p>校园卡用途：食堂消费、图书馆借书、门禁通行。</p>
+    <ul class="list-disc pl-5 space-y-1">
+    <li>支付宝绑定校园卡后可直接扫码支付（推荐）</li>
+    <li>宿舍空调需到楼下机器充值</li>
+    <li>水卡/电卡入住时领取</li>
+    </ul>`,
+              },
+              {
+                title: '校园网络',
+                content: `<p>校园内覆盖Wi-Fi，使用校园账号登录。网络套餐可到校内营业厅办理。联通宽带55元/月。</p>`,
+              },
+              {
+                title: '快递服务',
+                content: `<p>📮 通灌校区快递地址：<strong>江苏省连云港市海州区新南街道通灌南路108号</strong></p>
+    <p class="mt-1">校门口有菜鸟驿站，圆通、中通、顺丰、京东等均可到达。取件凭取件码。</p>`,
+              },
+              {
+                title: '交通出行',
+                content: `<p><strong>通灌→苍梧：</strong> 相距约5.2公里。大部分同学骑电动车，约15-20分钟。也可乘公交20路、B12路、24路等。</p>
+    <p class="mt-2"><strong>到连云港站（火车站）：</strong> 打车约10分钟，约15元</p>
+    <p class="mt-2"><strong>市内公交：</strong> 校门口公交站有20路、6路、25路、23路、B12路、24路等</p>
+    <p class="mt-2"><strong>共享单车：</strong> 5分钟骑到陇海步行街</p>
+    <p class="mt-2"><strong>景区交通：</strong> 可坐BRT公交去连岛海滨景区、花果山</p>`,
+              },
+              {
+                title: '生活设施',
+                content: `<ul class="list-disc pl-5 space-y-1">
+    <li>🏪 超市：校内有小卖铺，附近有家得福、大润发、利群</li>
+    <li>🍜 周边小吃：校门口50米小吃街（鸡蛋灌饼、铁板鱿鱼、烤面筋、凉粉等）</li>
+    <li>🛍️ 苏宁广场步行10分钟，吾悦广场步行即到，陇海步行街骑共享单车5分钟</li>
+    <li>🍽️ 盐河巷本地美食，海鲜加工人均30元吃到爽</li>
+    <li>💊 药店、理发店校门口都有</li>
+    </ul>`,
+              },
+              {
+                title: '周边游玩',
+                content: `<ul class="list-disc pl-5 space-y-1">
+    <li>🛍️ 苏宁广场（步行10分钟，聚餐逛街首选）</li>
+    <li>🛍️ 吾悦广场</li>
+    <li>🛍️ 陇海步行街（江苏省级示范步行街）</li>
+    <li>🍽️ 盐河巷（本地特色美食聚集地）</li>
+    <li>🏖️ 连岛海滨景区（BRT可达）</li>
+    <li>🏔️ 花果山（西游记取景地）</li>
+    <li>🌊 在海一方公园</li>
+    </ul>`,
+              },
+              {
+                title: '联系方式',
+                content: `<p>通灌校区管委会电话：(0518) 85585656</p>
+    <p>报警电话：0518-85585110</p>
+    <p>报修电话：0518-85585058</p>
+    <p>学校总机：0518-85895000</p>`,
+              },
+            ],
+          },
+          faq: {
+            title: '常见问题',
+            qas: [
+              { q: '通灌到苍梧多远？怎么去？', a: '相距约5.2公里。大部分同学骑电动车，15-20分钟即到。也可乘公交20路、B12路、24路。' },
+              { q: '通灌宿舍有空调吗？', a: '有！所有锦绣楼栋均为格力空调全覆盖，入住后到楼下机器充值即可使用。' },
+              { q: '通灌附近哪里好吃好玩？', a: '校门口小吃街，步行10分钟到苏宁广场，骑共享单车5分钟到陇海步行街。盐河巷本地海鲜值得一试。' },
+              { q: '通灌大一要晚自习吗？', a: '学校无统一晚自习安排，但建议养成自主学习习惯。可去空教室或宿舍自习。' },
+              { q: '通灌有哪些专业在这里？', a: '2024年有金融学、法学、汉语言文学、英语、俄语、日语、数学、海洋科学、机械、土木、测绘、船舶、食品、水产、财务管理等15个专业。通常大二搬到苍梧。' },
+              { q: '通灌宿舍有独卫吗？怎么洗澡？', a: '锦绣3/4/8号楼有独卫，其他楼没有。全校使用公共浴室（隔间式，每天打扫）。' },
+              { q: '通灌校区有健身房吗？', a: '校区较小，没有独立健身房。但操场可跑步锻炼，附近苏宁广场有商业健身房。' },
+              { q: '通灌到连云港站怎么走？', a: '打车约10分钟，约15元。也可乘公交。' },
+              { q: '附近有超市吗？', a: '校内有小卖铺，附近有家得福、大润发、利群超市。校门口有赵一鸣零食。' },
+              { q: '通灌校内有共享单车吗？', a: '校区不大，步行即可。校门口有共享单车可骑去周边。苍梧校区内则有共享电瓶车。' },
+              { q: '通灌有几个食堂？推荐哪个？', a: '3个：前程餐厅（快餐多）、美食广场（小吃多）、民族餐厅。美食广场的脆皮鸡米饭和前程餐厅的早餐比较推荐。' },
+              { q: '录取通知书什么时候到？', a: '一般在8月中下旬寄达。如逾期未收到，联系招生办咨询。' },
+            ],
+          },
+        },
+        services: [
+          { name: '二手电瓶车', desc: '校区往返必备，毕业生转让价优', contact: '联系微信号' },
+          { name: '驾校报名', desc: '校区合作驾校，学生优惠价', contact: '联系微信号' },
+          { name: '线上课程', desc: '学习资料和经验分享', contact: '联系微信号' },
+        ],
+      },
+
+      cangwu: {
+        name: '苍梧校区',
+        address: '江苏省连云港市海州区苍梧路59号',
+        quickLinks: [
+          { icon: 'map-pin', label: '校园地图', desc: '苍梧校区布局图（有ABC区）' },
+          { icon: 'phone', label: '常用电话', desc: '总机: 0518-85895000' },
+          { icon: 'calendar', label: '校历安排', desc: '2025-2026学年' },
+          { icon: 'bus', label: '通勤方式', desc: '公交/共享电瓶车' },
+        ],
+        pages: {
+          home: {
+            title: '苍梧校区概况',
+            content: `<p class="text-lg leading-relaxed">苍梧校区是江苏海洋大学的主校区，位于连云港市海州区苍梧路59号。校区面积大，设施齐全，是大多数学生的主阵地。</p>
+    <p class="mt-3 leading-relaxed">校内配备6个食堂、A/B/D三个宿舍区、图书馆、东西运动场、实验室集群等。特别的是，校内有共享电瓶车，这在多数高校中并不多见，日常出行上课非常方便。</p>
+    <p class="mt-3 leading-relaxed">周边有万达广场（步行约18分钟）、西门小吃街等生活配套。3个校门外均有公交站，出行便利。</p>`,
+          },
+          admission: {
+            title: '入学指南',
+            pages: [
+              {
+                title: '报到流程',
+                content: `<ol class="list-decimal pl-5 space-y-2">
+    <li><strong>线上报到：</strong>8月30日前登录迎新系统完成自助报到</li>
+    <li><strong>现场报到：</strong>2025级新生9月5日报到，至苍梧校区对应学院接待点</li>
+    <li><strong>提交材料：</strong>录取通知书、身份证及复印件3份、学籍档案（勿拆！）、党团组织关系证明、一寸/二寸证件照（红白蓝底各5张）、学校发的银行卡（提前激活）</li>
+    <li><strong>领取物品：</strong>宿舍钥匙、校园卡、军训服装</li>
+    <li><strong>办理入住：</strong>到对应宿舍区（A/B/D区）管理员处登记</li>
+    </ol>
+    <p class="mt-3 text-sm text-gray-500">不能按期报到需提前向学校请假（不超过2周）</p>`,
+              },
+              {
+                title: '招生专业',
+                content: `<p>苍梧校区是主校区，大部分本科专业都在此办学。涵盖海洋科学、机械、电子、计算机、土木、化工、食品、水产、文法学院、商学院、艺术学院等学院的各专业。</p>
+    <p class="mt-2">具体专业以当年招生简章为准。</p>`,
+              },
+              {
+                title: '收费标准',
+                content: `<table class="w-full text-sm"><thead><tr class="border-b"><th class="text-left py-2">类别</th><th class="text-right py-2">费用</th></tr></thead><tbody>
+    <tr class="border-b"><td class="py-2">文科类</td><td class="text-right">5200元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">理科类</td><td class="text-right">5500元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">工科类</td><td class="text-right">5800元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">农林类</td><td class="text-right">2500元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">住宿费</td><td class="text-right">700-1200元/学年</td></tr>
+    <tr class="border-b"><td class="py-2">体检费</td><td class="text-right">84元</td></tr>
+    <tr class="border-b"><td class="py-2">军训服装</td><td class="text-right">96元/套</td></tr>
+    <tr><td class="py-2">公寓用品(自愿)</td><td class="text-right">450元/套</td></tr>
+    </tbody></table>`,
+              },
+              {
+                title: '注册须知',
+                content: `<ul class="list-disc pl-5 space-y-2">
+    <li>新生须持录取通知书和身份证按时报到</li>
+    <li>因故不能按期报到，须提前书面请假（不超过2周）</li>
+    <li>入学后3个月内进行学籍复查，不合格取消学籍</li>
+    <li>助学贷款：办生源地贷款的去当地县区教育局资助管理中心</li>
+    <li>户口迁移：连云港市（含三县）一般不办，其他地区自愿</li>
+    </ul>`,
+              },
+              {
+                title: '军训指南',
+                content: `<p>军训时间：开学后2-3天开始，约2周（参考2024级：9月7日-21日）</p>
+    <p class="mt-2">训练地点：苍梧校区西运动场（动员大会）/ 东运动场（成果汇报）</p>
+    <p class="mt-2 font-medium">必备清单：</p>
+    <ul class="list-disc pl-5 mt-1 space-y-1">
+    <li>高倍防晒霜（SPF30+）—— 连云港9月太阳很毒，出门前半小时涂，休息时补涂</li>
+    <li>大容量水杯，可带淡盐水或运动饮料</li>
+    <li>松软吸汗鞋垫（或卫生巾代替）</li>
+    <li>藿香正气水、创可贴、防蚊喷雾、润喉片</li>
+    <li>小风扇、纸巾湿巾</li>
+    <li>糖果/巧克力防低血糖</li>
+    </ul>
+    <p class="mt-2 font-medium">⚠️ 重要提醒：</p>
+    <ul class="list-disc pl-5 mt-1 space-y-1">
+    <li>军训是必修课，不合格不准予毕业</li>
+    <li>身体不适立即报告，现场有医疗点，不要硬撑</li>
+    <li>每天必须吃早餐，多吃肉蛋奶</li>
+    <li>早睡早起，午休尽量睡一会儿</li>
+    <li>成果汇报有分列式、刺杀操、军体拳等</li>
+    </ul>`,
+              },
+            ],
+          },
+          study: {
+            title: '学习指南',
+            pages: [
+              {
+                title: '完全学分制',
+                content: `<p>学校实行完全学分制，每学期一般选20-30学分为宜，最高不超过36学分。选课通过学校教务系统进行。</p>
+    <p class="mt-2">选课建议：</p>
+    <ul class="list-disc pl-5 mt-1 space-y-1">
+    <li>认真对待每学期选课，热门课程需抢</li>
+    <li>绩点关系到奖学金和保研资格</li>
+    <li>关注教务处通知，不要错过选课时间</li>
+    </ul>`,
+              },
+              {
+                title: '学业导师制',
+                content: `<p>学校为每位新生配备学业导师，负责指导学习规划、选课建议和专业发展。入学后各学院会组织导师见面会。</p>`,
+              },
+              {
+                title: '学分认定',
+                content: `<p>无故缺课时数超过该课程教学时数1/3，或缺交作业超过1/3，取消该课程考核资格。课程考核不合格须重修。</p>
+    <p class="mt-2">转专业需咨询学院，一般有成绩和申请时间要求。</p>`,
+              },
+              {
+                title: '毕业要求',
+                content: `<ul class="list-disc pl-5 space-y-1">
+    <li>修满培养方案规定的全部学分</li>
+    <li>平均绩点达到学校要求</li>
+    <li>完成毕业论文/设计并通过答辩</li>
+    <li>军训合格</li>
+    <li>无未解除的违纪处分</li>
+    </ul>`,
+              },
+              {
+                title: '图书馆',
+                content: `<p>苍梧校区图书馆是学习主阵地：</p>
+    <ul class="list-disc pl-5 space-y-1">
+    <li>早上8:00开门，期末考试期间需早去占座</li>
+    <li>Wi-Fi全覆盖</li>
+    <li>馆藏丰富，涵盖各学科专业书籍</li>
+    <li>设有考研自习专区</li>
+    </ul>`,
+              },
+              {
+                title: '考研与自习',
+                content: `<p>苍梧校区自习地点推荐：</p>
+    <ul class="list-disc pl-5 space-y-1">
+    <li>📚 图书馆（主阵地，期末占座要早）</li>
+    <li>🏢 教学楼空教室（多数教室无空调，夏秋注意防暑）</li>
+    <li>☕ D区食堂（非饭点也可以自习）</li>
+    </ul>
+    <p class="mt-2">考研的同学建议提前占好图书馆考研专区位置。</p>`,
+              },
+            ],
+          },
+          life: {
+            title: '生活指南',
+            pages: [
+              {
+                title: '宿舍',
+                content: `<p>苍梧校区宿舍分A/B/D三个区：</p>
+    <table class="w-full text-sm mt-2"><thead><tr class="border-b"><th class="text-left py-2">区域</th><th class="text-left py-2">性别</th><th class="text-left py-2">房型</th><th class="text-left py-2">独卫</th><th class="text-left py-2">淋浴</th></tr></thead><tbody>
+    <tr class="border-b"><td>A区(A1-A10)</td><td>女生</td><td>4人间上下铺</td><td>有</td><td>公共浴室</td></tr>
+    <tr class="border-b"><td>B1-B4</td><td>男生</td><td>4人间上下铺</td><td>有</td><td>公共浴室</td></tr>
+    <tr class="border-b"><td>B5-B6</td><td>男生</td><td>6人间上下铺</td><td>无</td><td>公共浴室</td></tr>
+    <tr class="border-b"><td>B7-B12</td><td>男生</td><td>6人间上下铺</td><td>有</td><td>公共浴室</td></tr>
+    <tr><td>D区🏆</td><td>多为男生</td><td>4人间上床下桌</td><td>有</td><td>✅ 宿舍内可洗浴</td></tr>
+    </tbody></table>
+    <p class="mt-2">📌 D区在校内马路对面（出3号门过马路进4号门），两宿舍共用一套卫浴，条件最好</p>
+    <p class="mt-1">🛏️ 床铺尺寸：0.9m × 2.0m，被褥可自带或到校购买</p>
+    <p class="mt-1">🚪 门禁：晚上22:30关门</p>
+    <p class="mt-1">🔌 不断电，禁止大功率电器</p>
+    <p class="mt-1">🌬️ 空调全覆盖，到楼下机器充值使用</p>`,
+              },
+              {
+                title: '食堂',
+                content: `<p>苍梧校区有6个食堂，一顿饭8-15元：</p>
+    <ul class="list-disc pl-5 mt-2 space-y-2">
+    <li><strong>一食堂：</strong>靠近教学楼，课间就餐方便。推荐烤肉饭</li>
+    <li><strong>二食堂：</strong>两层楼，菜品种类最全。推荐三楼香锅、海鲜面加荷包蛋</li>
+    <li><strong>三食堂：</strong>新装修有电梯，可点外卖到座位。推荐5元馄饨、大包子</li>
+    <li><strong>四食堂：</strong>校内最大最全食堂。推荐石锅拌饭（小酥肉加鸡蛋）</li>
+    <li><strong>海洋特色主题餐厅：</strong>一食堂往南直走，海鲜类菜品</li>
+    <li><strong>民族餐厅（清真）：</strong>海洋主题餐厅右侧，牛肉拉面、麻辣烫</li>
+    </ul>
+    <p class="mt-2">🍽️ D区出4号门进有独立的D区食堂，提供汉堡、炸鸡、轻食沙拉、香锅等</p>`,
+              },
+              {
+                title: '校园卡',
+                content: `<p>校园卡用途：食堂消费、图书馆借书、门禁通行。</p>
+    <ul class="list-disc pl-5 space-y-1">
+    <li>支付宝绑定校园卡后可直接扫码支付（推荐）</li>
+    <li>宿舍空调需到楼下机器充值</li>
+    <li>水卡/电卡入住时领取</li>
+    </ul>`,
+              },
+              {
+                title: '校园网络',
+                content: `<p>校园内Wi-Fi全覆盖，使用校园账号登录。图书馆Wi-Fi速度较好。联通宽带55元/月，可到校内营业厅办理。</p>`,
+              },
+              {
+                title: '快递服务',
+                content: `<p>📮 苍梧校区快递地址：<strong>江苏省连云港市海州区新东街道苍梧路59号 江苏海洋大学</strong></p>
+    <p class="mt-1">校内有菜鸟驿站、京东、顺丰快递点，凭取件码取件。</p>`,
+              },
+              {
+                title: '交通出行',
+                content: `<p><strong>校内交通：</strong> 有共享电瓶车！扫码即用，日常上课非常方便（多数高校没有）</p>
+    <p class="mt-2"><strong>公交：</strong> 3个校门外均有公交站，B12、23、3、18、5、19等路</p>
+    <p class="mt-2"><strong>到连云港站（火车站）：</strong> 打车约15-20分钟</p>
+    <p class="mt-2"><strong>到万达广场：</strong> 步行18分钟（从3号门出），聚餐逛街首选</p>
+    <p class="mt-2"><strong>到苏宁广场：</strong> 打车约10元</p>`,
+              },
+              {
+                title: '生活设施',
+                content: `<ul class="list-disc pl-5 space-y-1">
+    <li>🏪 校内超市：保真华龙仓、百烁便利、欧特福超市</li>
+    <li>🏋️ 操场旁有健身房（学生价便宜）</li>
+    <li>💊 校内有药店</li>
+    <li>✂️ 理发店</li>
+    <li>🍔 西门小吃街（烤冷面、淀粉肠、冰粉等，均价10元左右）</li>
+    <li>⚠️ 4号门有"禁止外卖"标识，点外卖需校门口自取</li>
+    <li>🍉 校内水果价格偏高且秤不准，建议校外购买</li>
+    </ul>`,
+              },
+              {
+                title: '周边游玩',
+                content: `<ul class="list-disc pl-5 space-y-1">
+    <li>🛍️ 万达广场步行18分钟，最近的大型商圈</li>
+    <li>🍜 西门小吃街，烤冷面、冰粉等均价10元</li>
+    <li>🛍️ 苏宁广场、吾悦广场打车可达</li>
+    <li>🏖️ 连岛海滨景区、在海一方公园</li>
+    <li>🏔️ 花果山（西游记取景地）</li>
+    <li>🍂 苍梧校区银杏道（秋天氛围感拉满，拍照圣地）</li>
+    </ul>`,
+              },
+              {
+                title: '联系方式',
+                content: `<p>学校总机：0518-85895000</p>
+    <p>招生办：0518-85802843</p>`,
+              },
+            ],
+          },
+          faq: {
+            title: '常见问题',
+            qas: [
+              { q: '苍梧宿舍怎么分？A/B/D区哪个好？', a: 'A区女生四人间有独卫（公共淋浴），B区男生4-6人间，D区四人间上床下桌+室内淋浴（条件最好但距离教学区远在马路对面）。看学院分配。' },
+              { q: 'D区在马路对面吗？有独立淋浴吗？', a: '是的，D区在校外马路对面（出3号门进4号门），两宿舍共用一套卫浴，可室内淋浴，条件最好。有独立的D区食堂。' },
+              { q: '教室没空调怎么办？', a: '苍梧多数教室确实没空调，夏季注意防暑。可带小风扇，选座位选靠窗通风处。图书馆和宿舍有空调。' },
+              { q: '苍梧有几个食堂？推荐什么？', a: '6个：一至四食堂+海洋主题餐厅+民族餐厅+D区食堂。推荐二食堂香锅/海鲜面、四食堂石锅拌饭、三食堂5元馄饨。' },
+              { q: '万达怎么走？多远？', a: '从3号门出，步行约18分钟（1.3公里）。也可打车或骑共享电瓶车。是苍梧学生周末聚餐主要去处。' },
+              { q: '苍梧校区怎么不迷路？', a: '记住：2号门进直走大广场，北面女生A区；第一个路口右转古茗奶茶→一食堂/B区；大广场西南角三/四食堂；3号门出过马路D区。' },
+              { q: '快递站在哪里？', a: '校内有菜鸟驿站，也有京东和顺丰快递点。凭取件码取件。' },
+              { q: '苍梧有健身房吗？', a: '有！操场旁边就有健身房，学生价格便宜。' },
+              { q: '学校有共享电瓶车吗？', a: '有的！校内共享电瓶车，扫码即用，日常上课非常方便。这在全国高校中都比较少见。' },
+              { q: '社团百团大战什么时候？', a: '一般在开学后1-2周，在苍梧校区大广场或运动场举行。选1-2个感兴趣的参加即可，别贪多。' },
+              { q: '宿舍门禁几点？用电有限制吗？', a: '门禁晚上22:30。宿舍不断电，但不允许使用大功率违规电器。空调单独充值使用。' },
+              { q: '从火车站/高铁站怎么到苍梧？', a: '连云港站→苍梧：打车约15-20分钟，约20元。也可乘公交车。' },
+            ],
+          },
+        },
+        services: [
+          { name: '二手电瓶车', desc: '校区交通必备，毕业生转让价优', contact: '联系微信号' },
+          { name: '驾校报名', desc: '校内合作驾校，学生优惠价', contact: '联系微信号' },
+          { name: '线上课程', desc: '学习资料和备考经验分享', contact: '联系微信号' },
+        ],
+      },
+    };
+
+    // Common FAQ for both campuses
+    const commonFAQ = [
+      { q: '校园卡怎么用？', a: '食堂消费、图书馆借书、门禁通行。支付宝绑定后可扫码支付，推荐使用。' },
+      { q: '选课怎么选？', a: '通过学校教务系统选课，每学期20-30学分，最高36。热门课要抢，关注教务处通知。' },
+      { q: '转专业条件？', a: '入学后咨询学院，一般有成绩排名和申请时间窗口要求，具体各学院政策不同。' },
+      { q: '空调怎么充值？', a: '到所在宿舍楼下指定机器充值，具体操作看机器说明或问宿管。' },
+      { q: '宿舍用品要自带吗？', a: '床铺0.9×2.0米，被褥可自带或到校购买（公寓用品450元/套，自愿）。洗漱用品建议自带或到校买。' },
+    ];
+
     lucide.createIcons();
   </script>
 </body>
